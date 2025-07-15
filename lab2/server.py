@@ -252,4 +252,13 @@ def add_by_uuid():
 
     return {"message": f"{new_person['id']}"}, 200
     
-# Step 5: Add error handlers                
+# Step 5: Add error handlers
+# curl -X POST -i -w '\n' http://localhost:5000/notvalid
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return {"message": str(e)}, 500
+    
+# curl http://localhost:5000/test500
+@app.route("/test500")
+def test500():
+    raise Exception("Forced exception for testing")                    
