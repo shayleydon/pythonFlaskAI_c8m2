@@ -201,6 +201,7 @@ def find_by_uuid(id):
 # curl -X DELETE -i localhost:5000/person/66c09925-589a-43b6-9a5d-d1601cf53287
 # curl -X DELETE -i localhost:5000/person/not-a-valid-uuid
 # curl -X DELETE -i localhost:5000/person/11111111-589a-43b6-9a5d-d1601cf51111
+# curl -X GET -i localhost:5000/count
 @app.route("/person/<uuid:id>", methods=['DELETE'])
 def delete_by_uuid(id):
     # Iterate through the 'data' list to search for a person with a matching ID
@@ -212,4 +213,43 @@ def delete_by_uuid(id):
             # Return a JSON response with a message confirming deletion and a 200 OK status code
             return {"message": f"Person with ID {id} deleted"}, 200
     # If no matching person is found, return a JSON response with a message and a 404 Not Found status code
-    return {"message": "person not found"}, 404         
+    return {"message": "person not found"}, 404 
+    
+# Step 4: Parse JSON from Request body
+"""
+curl -X POST -i -w '\n' \
+  --url http://localhost:5000/person \
+  --header 'Content-Type: application/json' \
+  --data '{
+        "id": "4e1e61b4-8a27-11ed-a1eb-0242ac120002",
+        "first_name": "John",
+        "last_name": "Horne",
+        "graduation_year": 2001,
+        "address": "1 hill drive",
+        "city": "Atlanta",
+        "zip": "30339",
+        "country": "United States",
+        "avatar": "http://dummyimage.com/139x100.png/cc0000/ffffff"
+}'
+"""
+# curl -X GET -i localhost:5000/count
+"""
+curl -X POST -i -w '\n' \
+  --url http://localhost:5000/person \
+  --header 'Content-Type: application/json' \
+  --data '{}'
+"""  
+@app.route("/person", methods=['POST'])
+def add_by_uuid():
+    new_person = request.json
+    if not new_person:
+        return {"message": "Invalid input parameter"}, 422
+    # code to validate new_person ommited
+    try:
+        data.append(new_person)
+    except NameError:
+        return {"message": "data not defined"}, 500
+
+    return {"message": f"{new_person['id']}"}, 200
+    
+# Step 5: Add error handlers                
