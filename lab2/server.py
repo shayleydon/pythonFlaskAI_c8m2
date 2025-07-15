@@ -165,4 +165,51 @@ def name_search():
  # If no matching person is found, return a JSON response with a message and a 404 Not Found
     return {"message": "Person not found"}, 404
     
-# Step 3: Add dynamic URLs        
+# Step 3: Add dynamic URLs 
+# Task 1: Create GET /count endpoint
+# curl -X GET -i -w '\n' "localhost:5000/count"  
+@app.route("/count")
+def count():
+    try:
+        # Attempt to return the count of items in 'data' as a JSON response
+        return {"data count": len(data)}, 200
+    except NameError:
+        # Handle the case where 'data' is not defined
+        # Return a JSON response with a message and a 500 Internal Server Error status code
+        return {"message": "data not defined"}, 500
+
+# Task 2: Create GET /person/id endpoint
+# curl -X GET -i localhost:5000/person/66c09925-589a-43b6-9a5d-d1601cf53287
+# curl -X GET -i localhost:5000/person/not-a-valid-uuid
+# curl -X GET -i localhost:5000/person/11111111-589a-43b6-9a5d-d1601cf51111
+#@app.route("/person/<var_name>")
+#def find_by_uuid(var_name):
+#OR syntax == type:name
+@app.route("/person/<uuid:id>")
+def find_by_uuid(id):
+    # Iterate through the 'data' list to search for a person with a matching ID
+    for person in data:
+        # Check if the 'id' field of the person matches the 'id' parameter
+        if person["id"] == str(id):
+            # Return the matching person as a JSON response with a 200 OK status code
+            return person
+    # If no matching person is found, return a JSON response with a message and a 404 Not Found status code
+    return {"message": "person not found"}, 404
+
+# Task 3: Create DELETE /person/id endpoint
+# curl -X GET -i localhost:5000/person/66c09925-589a-43b6-9a5d-d1601cf53287 
+# curl -X DELETE -i localhost:5000/person/66c09925-589a-43b6-9a5d-d1601cf53287
+# curl -X DELETE -i localhost:5000/person/not-a-valid-uuid
+# curl -X DELETE -i localhost:5000/person/11111111-589a-43b6-9a5d-d1601cf51111
+@app.route("/person/<uuid:id>", methods=['DELETE'])
+def delete_by_uuid(id):
+    # Iterate through the 'data' list to search for a person with a matching ID
+    for person in data:
+        # Check if the 'id' field of the person matches the 'id' parameter
+        if person["id"] == str(id):
+            # Remove the person from the 'data' list
+            data.remove(person)
+            # Return a JSON response with a message confirming deletion and a 200 OK status code
+            return {"message": f"Person with ID {id} deleted"}, 200
+    # If no matching person is found, return a JSON response with a message and a 404 Not Found status code
+    return {"message": "person not found"}, 404         
