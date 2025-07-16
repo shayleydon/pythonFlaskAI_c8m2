@@ -1,0 +1,3 @@
+[submodule "lab3/hjbsk-build_deploy_app_flask"]
+	path = lab3/hjbsk-build_deploy_app_flask
+	url = https://github.com/shayleydon/hjbsk-build_deploy_app_flask.git
